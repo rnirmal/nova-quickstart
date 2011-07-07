@@ -31,7 +31,7 @@ function list_server {
 }
 
 function create_server {
-    JSON_DATA='{"server":{"name":"'$1'","flavorRef":"'$HOST'flavors/'$1'", "imageRef":"'$HOST'images/'$3'"}}'
+    JSON_DATA='{"server":{"name":"'$1'","flavorRef":"'$HOST'flavors/'$2'", "imageRef":"'$HOST'images/'$3'"}}'
     curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" -H"Content-Type: application/json" -d"$JSON_DATA" $HOST/servers
 }
 
