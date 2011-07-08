@@ -12,7 +12,7 @@ nova-manage network create 10.0.0.0/24 1 32
 nova-manage floating create `hostname` 10.6.0.0/27
 # Create a default admin user and a project and assign the admin user to it
 nova-manage user admin admin admin admin
-nova-manage project create mynova admin
+nova-manage project create admin admin
 
 # Restart all the services
 sudo service nova-api restart
