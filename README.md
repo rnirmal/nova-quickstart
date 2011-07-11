@@ -1,5 +1,5 @@
 Openstack Nova Quickstart
--------------------------
+=========================
 
 Hopefully this provides an easy entry into running Openstack Nova in a vm.
 
