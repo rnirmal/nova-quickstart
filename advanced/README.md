@@ -97,6 +97,10 @@ Prerequisites
         $ sudo sed -i 's/false/true/g' /etc/default/iscsitarget
         $ sudo service iscsitarget restart
 
+- Install Rabbit MQ Server
+
+        $ sudo apt-get install rabbitmq-server
+
 - Install a whole bunch of required python libraries/tools
 
         $ sudo apt-get install python-mox python-ipy python-paste python-migrate python-gflags python-greenlet
