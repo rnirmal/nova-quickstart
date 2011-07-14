@@ -118,6 +118,15 @@ Prerequisites
         $ sudo mysql -u root -p$ROOTPASS -e "GRANT ALL PRIVILEGES ON glance.* TO 'nova'@'%' WITH GRANT OPTION;"
         $ sudo mysql -u root -p$ROOTPASS -e "SET PASSWORD FOR 'nova'@'%' = PASSWORD('nova');"
 
+- Download a sample machine image to use with Nova
+
+        $ cd
+        $ mkdir images
+        $ cd images
+        $ wget -c http://images.ansolabs.com/tty.tgz
+        $ tar -zxf tty.tgz
+
+
 Running Keystone
 ----------------
 
