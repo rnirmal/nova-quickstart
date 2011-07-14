@@ -103,11 +103,11 @@ Prerequisites
 
 - Install a whole bunch of required python libraries/tools
 
-        $ sudo apt-get install python-mox python-ipy python-paste python-migrate python-gflags python-greenlet
+        $ sudo apt-get install python-mox python-ipy python-paste python-migrate python-gflags python-greenlet python-novaclient
         $ sudo apt-get install python-libvirt python-libxml2 python-routes python-netaddr python-pastedeploy
         $ sudo apt-get install python-eventlet python-cheetah python-carrot python-tempita python-sqlalchemy
         $ sudo apt-get install python-suds python-lockfile python-m2crypto git-core python-dev python-argparse
-        $ sudo apt-get install python-wsgiref python-lxml python-pastescript python-webob python-twisted
+        $ sudo apt-get install python-wsgiref python-lxml python-pastescript python-webob python-twisted python-boto
 
 - Install Sqlite
 
