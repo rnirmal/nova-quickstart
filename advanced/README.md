@@ -112,11 +112,11 @@ Prerequisites
 - Install Mysql. Set a root password when prompted for it. For docs purposes its $ROOTPASS
 
         $ sudo apt-get install mysql-server python-mysqldb
-        $ sudo mysql -u root -p$ROOTPASS -e "CREATE DATABASE nova;"
-        $ sudo mysql -u root -p$ROOTPASS -e "CREATE DATABASE glance;"
-        $ sudo mysql -u root -p$ROOTPASS -e "GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' WITH GRANT OPTION;"
-        $ sudo mysql -u root -p$ROOTPASS -e "GRANT ALL PRIVILEGES ON glance.* TO 'nova'@'%' WITH GRANT OPTION;"
-        $ sudo mysql -u root -p$ROOTPASS -e "SET PASSWORD FOR 'nova'@'%' = PASSWORD('nova');"
+        $ mysql -u root -p$ROOTPASS -e "CREATE DATABASE nova;"
+        $ mysql -u root -p$ROOTPASS -e "CREATE DATABASE glance;"
+        $ mysql -u root -p$ROOTPASS -e "GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' WITH GRANT OPTION;"
+        $ mysql -u root -p$ROOTPASS -e "GRANT ALL PRIVILEGES ON glance.* TO 'nova'@'%' WITH GRANT OPTION;"
+        $ mysql -u root -p$ROOTPASS -e "SET PASSWORD FOR 'nova'@'%' = PASSWORD('nova');"
 
 - Download a sample machine image to use with Nova
 
