@@ -15,24 +15,24 @@ function nova_accept {
 }
 
 function list_images {
-    curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" $HOST/images/detail
+    curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" $HOST/images/detail | python -mjson.tool
 }
 
 function list_flavors {
-    curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" $HOST/flavors/detail
+    curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" $HOST/flavors/detail | python -mjson.tool
 }
 
 function list_servers {
-    curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" $HOST/servers/detail
+    curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" $HOST/servers/detail | python -mjson.tool
 }
 
 function list_server {
-    curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" $HOST/servers/$1
+    curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" $HOST/servers/$1 | python -mjson.tool
 }
 
 function create_server {
     JSON_DATA='{"server":{"name":"'$1'","flavorRef":"'$HOST'flavors/'$2'", "imageRef":"'$HOST'images/'$3'"}}'
-    curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" -H"Content-Type: application/json" -d"$JSON_DATA" $HOST/servers
+    curl -H "X-Auth-Token: $TOKEN" -H"ACCEPT: application/$ENC" -H"Content-Type: application/json" -d"$JSON_DATA" $HOST/servers | python -mjson.tool
 }
 
 function delete_server {

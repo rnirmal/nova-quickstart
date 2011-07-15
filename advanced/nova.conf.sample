@@ -1,0 +1,19 @@
+--dhcpbridge_flagfile=/etc/nova/nova.conf
+--dhcpbridge=/usr/bin/nova-dhcpbridge
+--logdir=/var/log/nova
+--state_path=/var/lib/nova
+--lock_path=/var/lock/nova
+--verbose
+
+# Settings beyond default
+# Nova Database
+--sql_connection=mysql://nova:nova@localhost/nova
+
+# Image Service
+--image_service=nova.image.glance.GlanceImageService
+
+# Volume Service
+--volume_group=nova
+
+# Compute Service
+--libvirt_type=qemu

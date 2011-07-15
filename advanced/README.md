@@ -136,9 +136,149 @@ Running Keystone
 
 Running Glance
 --------------
+Glance provides services for discovering, registering, and retrieving virtual machine images. Glance has a RESTful API that allows querying of VM image metadata as well as retrieval of the actual image.
+
+- Lets start with installing glance from source so nova can use the client code, wihtout having to setup extra paths.
+
+        $ cd /home/nova/glance/trunk
+        $ sudo python setup.py install
+
+- Configure glance with some basic defaults. For this we will use a local filesystem to store the images and use mysql for the metadata.
+
+        # Create a directory for local image store
+        $ sudo mkdir -p /var/lib/glance/images
+        $ sudo mkdir -p /var/log/glance
+
+        # Update etc/glance-registry.conf
+        sql_connection = mysql://nova:nova@localhost/glance
+
+        # Setup the required tables
+        $ sudo glance-manage --config-file=/home/nova/glance/trunk/etc/glance-registry.conf db_sync 
+
+- Run Glance API and Glance Registry
+
+        $ cd /home/nova/glance/trunk
+
+        # Start API
+        $ sudo bin/glance-api --config-file=etc/glance-api.conf &
+
+        # Start Registry
+        $ sudo bin/glance-registry --config-file=etc/glance-registry.conf &
+
+- Upload images to glance
+
+        $ bin/glance-upload --type kernel /home/nova/images/aki-tty/image tty-kernel
+        $ bin/glance-upload --type ramdisk /home/nova/images/ari-tty/image tty-ramdisk
+        $ bin/glance-upload --type machine --kernel 1 --ramdisk 2 /home/nova/images/ami-tty/image tty
+
+- Lets list and make sure the images are there
+
+        # List all images
+        $ bin/glance index
+
+        # List all images with details
+        $ bin/glance details
+
+        # List a image
+        $ bin/glance show <id>
+
 
 Running Nova
 ------------
+Nova is a cloud computing fabric controller (the main part of an IaaS system).
+
+- Lets apply a quick patch before we start. Some of this should be fixed soon, others may not make it.
+
+        $ cd /home/nova/nova/trunk
+        $ bzr patch /home/nova/nova-quickstart/advanced/nova.patch
+
+- Initialize Nova
+
+        # Create some required directories
+        $ cd /home/nova/nova/trunk
+        $ sudo mkdir -p /var/log/nova
+        $ sudo mkdir -p /var/lock/nova
+        $ sudo mkdir -p /var/lib/nova/instances
+
+        # Copy the sample conf file
+        $ cp /home/nova/nova-quickstart/advanced/nova.conf.sample etc/nova.conf
+
+        # Setup the database tables
+        $ sudo bin/nova-manage --flagfile=etc/nova.conf db sync
+
+        # Create a default set of fixed and floating ips
+        $ sudo bin/nova-manage --flagfile=etc/nova.conf network create private 10.0.0.0/24 1 32 0 0 0 0 br100 eth0
+        $ sudo bin/nova-manage --flagfile=etc/nova.conf floating create 10.6.0.0/27
+
+        # Create a default admin user and a project and assign the admin user to it
+        $ sudo bin/nova-manage --flagfile=etc/nova.conf user admin admin admin admin
+        $ sudo bin/nova-manage --flagfile=etc/nova.conf project create admin admin
+
+        # Create a key pair to use for passwords login to created instances
+        $ sudo bin/nova-manage --flagfile=etc/nova.conf key create admin mykey > mykey.pem
+        $ chmod 600 mykey.pem
+
+        # Give nova user sudo access without a password
+        $ echo "nova   ALL=NOPASSWD: ALL" | sudo tee -a /etc/sudoers
+
+#### Start all the Nova services
+
+        # Nova API
+        $ sudo bin/nova-api --flagfile=etc/nova.conf
+
+        # Nova Scheduler
+        $ sudo bin/nova-scheduler --flagfile=etc/nova.conf
+
+        # Nova Network
+        $ sudo bin/nova-network --flagfile=etc/nova.conf
+
+        # Nova Compute
+        $ sudo bin/nova-compute --flagfile=etc/nova.conf
+
+        # Nova Volume
+        $ sudo bin/nova-volume --flagfile=etc/nova.conf
+
+#### Start and Stop with a script
+- Start all the nova services and glance with this script
+
+        $ cd /home/nova/nova-quickstart/advanced
+        $ ./nova-start.sh
+
+- Stop all the services
+
+        # Cancel out of one of the screen windows and
+        $ ./nova-stop.sh
+
+### Create/list/delete instances using novacurl.sh
+Using the sample `novacurl.sh` we are going to create, list and delete instances by running simple
+bash fuctions with curl commands.
+
+- Login and get and _auth_token_ using the _username_ and _apikey_
+
+        $ cd /home/nova/nova-quickstart
+        $ . novacurl.sh
+        $ nova_login admin admin
+
+- List available images
+
+        $ list_images
+
+- List available flavors
+
+        $ list_flavors
+
+- Create a erver
+
+        $ create_server [name] [flavor id] [image id]
+
+- List available servers
+
+        $ list_servers
+
+- Delete a server
+
+        $ delete_server [id]
+
 
 Running Dashboard
 -----------------

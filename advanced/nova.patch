@@ -1,0 +1,77 @@
+=== modified file 'bin/nova-manage'
+--- bin/nova-manage     2011-07-14 19:13:15 +0000
++++ bin/nova-manage     2011-07-15 01:48:00 +0000
+@@ -364,6 +364,22 @@
+             crypto.revoke_certs_by_user(user_id)
+
+
++class KeyCommands(object):
++    """Class for managing users."""
++
++    def __init__(self):
++        self.manager = manager.AuthManager()
++
++    def create(self, user, key_name):
++        """Creates a new keypair for the specified user
++        arguments: user key_name"""
++        try:
++            data = self.manager.create_key(user, key_name)
++            print data['private_key']
++        except exception.DBError, e:
++            _db_error(e)
++
++
+ class ProjectCommands(object):
+     """Class for managing projects."""
+
+@@ -1220,6 +1236,7 @@
+     ('host', HostCommands),
+     ('instance_type', InstanceTypeCommands),
+     ('image', ImageCommands),
++    ('key', KeyCommands),
+     ('network', NetworkCommands),
+     ('project', ProjectCommands),
+     ('role', RoleCommands),
+
+=== modified file 'nova/auth/manager.py'
+--- nova/auth/manager.py        2011-06-03 18:34:54 +0000
++++ nova/auth/manager.py        2011-07-15 01:30:52 +0000
+@@ -730,6 +730,22 @@
+         with self.driver() as drv:
+             drv.modify_user(uid, access_key, secret_key, admin)
+
++    def create_key(self, user_id, key_name):
++        """Generate a key"""
++        try:
++            db.key_pair_get(context.get_admin_context(), user_id, key_name)
++            raise exception.KeyPairExists(key_name=key_name)
++        except exception.NotFound:
++            pass
++        private_key, public_key, fingerprint = crypto.generate_key_pair()
++        key = {}
++        key['user_id'] = user_id
++        key['name'] = key_name
++        key['public_key'] = public_key
++        key['fingerprint'] = fingerprint
++        db.key_pair_create(context.get_admin_context(), key)
++        return {'private_key': private_key, 'fingerprint': fingerprint}
++
+     @staticmethod
+     def get_key_pairs(context):
+         return db.key_pair_get_all_by_user(context.elevated(), context.user_id)
+
+=== modified file 'nova/image/glance.py'
+--- nova/image/glance.py        2011-06-22 19:11:23 +0000
++++ nova/image/glance.py        2011-07-14 22:15:21 +0000
+@@ -73,8 +73,8 @@
+         # NOTE(sirp): we want to load balance each request across glance
+         # servers. Since GlanceImageService is a long-lived object, `client`
+         # is made to choose a new server each time via this property.
+-        if self._client is not None:
+-            return self._client
++#        if self._client is not None:
++#            return self._client
+         glance_host, glance_port = pick_glance_api_server()
+         return GlanceClient(glance_host, glance_port)
+
+
