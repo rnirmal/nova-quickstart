@@ -307,32 +307,32 @@ Dashboard is a reference UI implementation for interacting with Openstack
 
 - Install some dependencies
 
-       $ cd /home/nova/openstack-dashboard/openstack-dashboard
-       $ python tools/install_venv.py
+        $ cd /home/nova/openstack-dashboard/openstack-dashboard
+        $ python tools/install_venv.py
 
 - Copy conf files
 
-       $ cp local/local_settings.py.example local/local_settings.py
+        $ cp local/local_settings.py.example local/local_settings.py
 
 ### Update Nova conf to use Keystone and add openstackx api extensions
 - Update the `/home/nova/nova/trunk/etc/nova.conf` file
 
-       # Replace --api_paste_config with
-       --api_paste_config=/home/nova/keystone/examples/paste/nova-api-paste.ini
+        # Replace --api_paste_config with
+        --api_paste_config=/home/nova/keystone/examples/paste/nova-api-paste.ini
 
-       # Add os-api extensions
-       --osapi_extensions_path=/home/nova/openstackx/extensions
+        # Add os-api extensions
+        --osapi_extensions_path=/home/nova/openstackx/extensions
 
 - Sync the dashboard database with the required tables
 
-       $ cd /home/nova/openstack-dashboard/openstack-dashboard
-       $ tools/with_venv.sh dashboard/manage.py syncdb
+        $ cd /home/nova/openstack-dashboard/openstack-dashboard
+        $ tools/with_venv.sh dashboard/manage.py syncdb
 
 - Run the dashboard server
 
-       $ tools/with_venv.sh dashboard/manage.py runserver 0.0.0.0:8000
+        $ tools/with_venv.sh dashboard/manage.py runserver 0.0.0.0:8000
 
-- Access it at _http://<ip>:8000
-- Login using _"admin"_ _"secrete"
+- Access it at _http://<ip>:8000_
+- Login using _"admin"_ _"secrete"_
 
-### Note: You can't do anything with it right now, there's some issues with the latest trunk and novacurl.sh won't work either, because of integration with keystone which is an ongoing proess and in the alpha state.
+#### Note: You can't do anything with it right now, there's some issues with the latest trunk and novacurl.sh won't work either, because of integration with keystone which is an ongoing proess and in the alpha state.
